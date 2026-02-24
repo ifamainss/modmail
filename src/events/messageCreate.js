@@ -56,6 +56,11 @@ module.exports = {
           if (!channelName.startsWith('modmail-')) {
             return message.reply('This command can only be used in ModMail ticket channels.');
           }
+          //forward messages
+           if (commandName === 'reply') {
+          const channelName = message.channel.name;
+          if (!channelName.startsWith('modmail-')) {
+            return message.reply('This command can only be used in ModMail ticket channels.');
 
           const existingTicket = await Ticket.findOne({
             channelId: message.channel.id,
