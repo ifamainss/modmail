@@ -13,7 +13,7 @@ module.exports = {
     // Set bot status - something clearer about DMing to create tickets
     client.user.setPresence({
       activities: [{ 
-        name: 'DM me to create a ticket!',
+        name: 'Playing Chess with the Heavenly Principles',
         type: ActivityType.Custom 
       }],
       status: 'online'
