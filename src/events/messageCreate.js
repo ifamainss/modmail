@@ -63,7 +63,7 @@ module.exports = {
       }
 
      // If it's a command, handle it
-if (message.content.startsWith(config.prefix)) {
+if (message.content.startsWith(config.prefix)) 
   const args = message.content.slice(config.prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
 
