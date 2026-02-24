@@ -57,7 +57,7 @@ async function addMessageToTicket(message, client, isStaff = false) {
       const responseMessage = await ConfigManager.getSetting(
         guild.id,
         'settings.messages.responseMessage',
-        'Staff reply:'
+        ''
       );
       
       // Check if we should use timestamps
