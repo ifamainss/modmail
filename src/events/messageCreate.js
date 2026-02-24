@@ -6,6 +6,11 @@ const logger = require('../utils/logger');
 const moment = require('moment');
 const { EmbedBuilder } = require('discord.js');
 
+// ===============================
+// SUBSCRIPTION SYSTEM (IN MEMORY)
+// ===============================
+const ticketSubscriptions = new Map();
+
 module.exports = {
   name: 'messageCreate',
   async execute(message, client) {
@@ -33,7 +38,31 @@ module.exports = {
 
       // Add message to existing ticket
       const added = await addMessageToTicket(message, client, false);
-      if (added) return;
+
+      if (added) {
+
+        // Find active ticket
+        const ticket = await Ticket.findOne({
+          userId: message.author.id,
+          closed: false
+        });
+
+        if (ticket) {
+          const subscribers = ticketSubscriptions.get(ticket.channelId);
+
+          if (subscribers && subscribers.size > 0) {
+
+            const channel = client.channels.cache.get(ticket.channelId);
+
+            if (channel) {
+              const mentions = [...subscribers].map(id => `<@${id}>`).join(' ');
+              channel.send(`📩 New reply from user ${mentions}`);
+            }
+          }
+        }
+
+        return;
+      }
 
       // Or create new ticket
       return createTicket(message, client);
@@ -86,7 +115,7 @@ module.exports = {
     }
 
     // =====================================================
-    // REPLY (ONLY THIS SENDS MESSAGE)
+    // REPLY (EMBED - IGUAL QUE ANTES)
     // =====================================================
     if (command === 'reply') {
 
@@ -129,13 +158,43 @@ module.exports = {
       return;
     }
 
-    // Any other command → do nothing
+    // =====================================================
+    // SUBSCRIBE
+    // =====================================================
+    if (command === 'sub') {
+
+      const ticket = await Ticket.findOne({
+        channelId: message.channel.id,
+        closed: false
+      });
+
+      if (!ticket) {
+        return message.reply('This is not an active ticket.');
+      }
+
+      const channelId = message.channel.id;
+
+      if (!ticketSubscriptions.has(channelId)) {
+        ticketSubscriptions.set(channelId, new Set());
+      }
+
+      const subscribers = ticketSubscriptions.get(channelId);
+
+      if (subscribers.has(message.author.id)) {
+        return message.reply('You are already subscribed to this ticket.');
+      }
+
+      subscribers.add(message.author.id);
+
+      return message.reply('✅ You are now subscribed to this ticket.');
+    }
+
     return;
   }
 };
 
 // =====================================================
-// LIST TICKETS
+// LIST TICKETS (DM)
 // =====================================================
 async function handleListTicketsCommand(message, client) {
   try {
