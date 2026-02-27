@@ -1,10 +1,10 @@
 module.exports = {
   prefix: process.env.PREFIX || '=',
-  embedColor: '#ED4245', // Red
+  embedColor: '##94f7f1', // Blue
   footer: 'Made by @childeetos',
   statusMessages: {
-    online: 'Playing Chess with the Heavenly Principles',
-    idle: 'Playing Chess with the Heavenly Principles'
+    online: 'Playing tag with Cacucu',
+    idle: 'Playing tag with Cacucu'
   },
   cooldowns: {
     commands: 3, // cooldown in seconds for normal commands
@@ -24,6 +24,6 @@ module.exports = {
   },
   credits: {
     name: '@childeetos',
-    website: 'https://discord.gg/ZNQnnE6Vr6'
+    website: 'https://discord.gg/Z6sttGGjtY'
   }
 }; 
